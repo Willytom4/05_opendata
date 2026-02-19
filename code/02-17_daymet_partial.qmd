@@ -197,19 +197,29 @@ daymet_all
 Let's inspect weather data for the first site-year.  
 
 ```{r}
-
+daymet_all$weather[1]
 ```
 
 Now let's unnest the weather column.  
 ```{r}
-daymet_all_unnest 
+daymet_all_unnest <- unnest(daymet_all,
+                            cols = weather) %>%
+  pivot_wider(names_from = measurement,
+              values_from = value) %>%
+  janitor::clean_names()
 
+
+# daymet_all_unnest <- %>% dayment_all %>% unnest(weather) - used in class
+# y = predicted or response variable while x = explanatory or predictor variable
 daymet_all_unnest
 
 ```
 
 How many rows? Why?  
+7 variables for the year = 7 x 365 = 2555
 
+weather has 698 for each of the 2555 data points has 698
+2555 x 698 = 1783,390
 # Exporting  
 We don't want to have to make an API call every time we'll work with this weather data.  
 
@@ -217,7 +227,9 @@ Therefore, a best practice here is to pull weather data once and export it to fi
 
 Let's do that below:  
 ```{r}
-
+# we use ggsave for plots and write for other files
+write_csv(daymet_all_unnest,
+          "../output/fieldweatherdata.csv")
 ```
 
 
